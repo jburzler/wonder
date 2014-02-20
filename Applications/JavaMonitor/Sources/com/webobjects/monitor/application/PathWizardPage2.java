@@ -12,9 +12,16 @@ package com.webobjects.monitor.application;
  IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN  ADVISED OF THE POSSIBILITY OF 
  SUCH DAMAGE.
  */
+import java.io.File;
+
+import org.apache.commons.io.IOUtils;
+
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.monitor._private.MApplication;
 import com.webobjects.monitor._private.MHost;
+
+import er.extensions.foundation.ERXStringUtilities;
 
 public class PathWizardPage2 extends MonitorComponent {
     /**
@@ -73,7 +80,23 @@ public class PathWizardPage2 extends MonitorComponent {
         return aPage;
     }
 
-	public static PathWizardPage2 create(WOContext context) {
-		return (PathWizardPage2) context.page().pageWithName(PathWizardPage2.class.getName());
+	public static PathWizardPage2 create(WOContext context, MApplication application) {
+		final PathWizardPage2 aPage = (PathWizardPage2) context.page().pageWithName(PathWizardPage2.class.getName());
+		aPage.setMyApplication(application);
+		return aPage;
 	}
+	
+    public String aPath() {
+    	if (aPath == null) {
+	        final String key = ERXStringUtilities.lastPropertyKeyInKeyPath(callbackKeypath);
+			aPath = (String) myApplication().valueForKey(key);
+			if (aPath != null) {
+	            File directory = new File(aPath);
+	            if (!directory.exists()) {
+		            directory.mkdir();
+                }
+            }
+        }
+    	return aPath;
+    }
 }
