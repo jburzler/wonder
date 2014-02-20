@@ -93,7 +93,7 @@ public class PathWizardPage2 extends MonitorComponent {
 			if (aPath != null) {
 	            File directory = new File(aPath);
 	            if (!directory.exists()) {
-		            directory.mkdir();
+	            	directory.mkdirs();
                 }
             }
         }
